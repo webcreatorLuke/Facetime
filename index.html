@@ -190,28 +190,56 @@
             top: 2rem;
             right: 2rem;
             background: var(--bg-medium);
-            padding: 1rem 1.5rem;
+            padding: 1.5rem;
             border-radius: 12px;
             border: 2px solid var(--accent);
             z-index: 1000;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             animation: slideInRight 0.5s ease;
+            max-width: 350px;
         }
 
         .room-code-display .label {
             font-size: 0.7rem;
             color: var(--text-dim);
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
         }
 
         .room-code-display .code {
-            font-size: 1.8rem;
+            font-size: 1rem;
             color: var(--accent);
             font-weight: 700;
-            letter-spacing: 0.3em;
             font-family: 'Space Mono', monospace;
+            word-break: break-all;
+            padding: 0.8rem;
+            background: var(--bg-dark);
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--accent);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 6px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--accent-dim);
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.copied {
+            background: #00cc6a;
         }
 
         @keyframes slideInRight {
@@ -516,11 +544,13 @@
             .room-code-display {
                 top: 1rem;
                 right: 1rem;
-                padding: 0.8rem 1rem;
+                left: 1rem;
+                max-width: none;
+                padding: 1rem;
             }
 
             .room-code-display .code {
-                font-size: 1.5rem;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -594,8 +624,9 @@
 
         <!-- Room Code Display (Top Right) -->
         <div class="room-code-display hidden" id="roomCodeDisplay">
-            <div class="label">Room Code</div>
+            <div class="label">Share this code</div>
             <div class="code" id="roomCode"></div>
+            <button class="copy-btn" id="copyBtn">Copy Code</button>
         </div>
 
         <!-- Chat Screen -->
@@ -649,6 +680,7 @@
         const cancelPermission = document.getElementById('cancelPermission');
         const permissionError = document.getElementById('permissionError');
         const permissionErrorText = document.getElementById('permissionErrorText');
+        const copyBtn = document.getElementById('copyBtn');
 
         let pendingAction = null;
         let pendingRoomCode = null;
@@ -785,7 +817,7 @@
             // Wait for peer ID to be ready
             peer.on('open', (id) => {
                 myPeerId = id;
-                roomCodeEl.textContent = id.substring(0, 8).toUpperCase();
+                roomCodeEl.textContent = id;
                 roomCodeDisplay.classList.remove('hidden');
                 
                 setupScreen.style.display = 'none';
@@ -793,6 +825,39 @@
                 updateStatus('Waiting for someone to join...', 'waiting');
             });
         }
+
+        // Copy room code to clipboard
+        copyBtn.addEventListener('click', async () => {
+            const code = roomCodeEl.textContent;
+            try {
+                await navigator.clipboard.writeText(code);
+                copyBtn.textContent = '✓ Copied!';
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy Code';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copyBtn.textContent = '✓ Copied!';
+                    copyBtn.classList.add('copied');
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy Code';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                } catch (err2) {
+                    alert('Failed to copy. Please copy manually.');
+                }
+                document.body.removeChild(textArea);
+            }
+        });
 
         // Start join room
         async function startJoinRoom(roomCode) {
@@ -802,29 +867,39 @@
             peer.on('open', () => {
                 updateStatus('Connecting to peer...', 'waiting');
                 
-                // Make the call
-                const call = peer.call(roomCode.toLowerCase(), localStream);
-                currentCall = call;
+                // Clean the room code (remove any extra spaces)
+                const cleanCode = roomCode.trim();
+                
+                // Small delay to ensure host is ready
+                setTimeout(() => {
+                    // Make the call
+                    const call = peer.call(cleanCode, localStream);
+                    currentCall = call;
 
-                if (!call) {
-                    updateStatus('Failed to connect. Invalid room code.', 'waiting');
-                    return;
-                }
+                    if (!call) {
+                        updateStatus('Failed to connect. Invalid room code.', 'waiting');
+                        return;
+                    }
 
-                call.on('stream', (remoteStream) => {
-                    console.log('Received remote stream');
-                    remoteVideo.srcObject = remoteStream;
-                    updateStatus('Connected', 'connected');
-                });
+                    call.on('stream', (remoteStream) => {
+                        console.log('Received remote stream');
+                        remoteVideo.srcObject = remoteStream;
+                        updateStatus('Connected', 'connected');
+                    });
 
-                call.on('close', () => {
-                    updateStatus('Call ended', 'waiting');
-                });
+                    call.on('close', () => {
+                        updateStatus('Call ended', 'waiting');
+                    });
 
-                call.on('error', (err) => {
-                    console.error('Call error:', err);
-                    updateStatus('Connection failed. Check the room code.', 'waiting');
-                });
+                    call.on('error', (err) => {
+                        console.error('Call error:', err);
+                        if (err.type === 'peer-unavailable') {
+                            updateStatus('Peer not found. Make sure they created a room and are waiting.', 'waiting');
+                        } else {
+                            updateStatus('Connection failed: ' + err.type, 'waiting');
+                        }
+                    });
+                }, 1000);
 
                 setupScreen.style.display = 'none';
                 chatScreen.style.display = 'block';
