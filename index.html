@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connect • Video Chat</title>
+    <title>Connect • Multi-User Video Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
     <style>
@@ -32,7 +32,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated background */
         .bg-pattern {
             position: fixed;
             top: 0;
@@ -78,7 +77,6 @@
             letter-spacing: 0.05em;
         }
 
-        /* Setup Screen */
         .setup-screen {
             display: flex;
             flex-direction: column;
@@ -133,7 +131,6 @@
             font-size: 1.1rem;
             transition: all 0.3s ease;
             text-align: center;
-            letter-spacing: 0.2em;
         }
 
         input:focus {
@@ -242,18 +239,6 @@
             background: #00cc6a;
         }
 
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Media Permission Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -279,25 +264,11 @@
             animation: scaleIn 0.3s ease;
         }
 
-        @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
         .modal h3 {
             font-family: 'Syne', sans-serif;
             font-size: 1.5rem;
             color: var(--accent);
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .modal p {
@@ -318,10 +289,6 @@
 
         .permission-icon {
             font-size: 1.5rem;
-        }
-
-        .permission-text {
-            flex: 1;
         }
 
         .permission-text h4 {
@@ -372,30 +339,38 @@
             border-left-color: #fbbf24;
         }
 
-        .info-box.error {
-            background: rgba(255, 68, 68, 0.1);
-            border-left-color: var(--error);
-        }
-
-        .info-box strong {
-            color: var(--text);
-        }
-
-        #permissionError {
-            border-left-color: #fbbf24;
-            animation: slideDown 0.3s ease;
-        }
-
-        /* Chat Screen */
         .chat-screen {
             display: none;
             animation: fadeIn 0.8s ease;
         }
 
-        .video-container {
+        .status {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-medium);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .status.waiting {
+            border-left-color: #fbbf24;
+        }
+
+        .participant-count {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--bg-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+
+        .video-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
             margin-bottom: 2rem;
         }
 
@@ -406,6 +381,16 @@
             border-radius: 16px;
             overflow: hidden;
             aspect-ratio: 4/3;
+        }
+
+        .video-wrapper.local {
+            border-color: var(--accent);
+        }
+
+        .video-wrapper.screen-share {
+            grid-column: 1 / -1;
+            aspect-ratio: 16/9;
+            border-color: #fbbf24;
         }
 
         video {
@@ -432,6 +417,7 @@
             gap: 1rem;
             justify-content: center;
             margin-bottom: 2rem;
+            flex-wrap: wrap;
         }
 
         .control-btn {
@@ -458,89 +444,54 @@
         .control-btn.active {
             background: var(--accent);
             color: var(--bg-dark);
+            border-color: var(--accent);
         }
 
         .control-btn.danger {
             background: var(--error);
             border-color: var(--error);
+            color: white;
         }
 
         .control-btn.danger:hover {
             background: #cc0000;
-            transform: scale(1.1);
         }
 
-        .status {
-            text-align: center;
-            padding: 1rem;
-            background: var(--bg-medium);
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--accent);
-        }
-
-        .status.waiting {
-            border-left-color: #fbbf24;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .status.connected {
-            border-left-color: var(--accent);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.6;
-            }
+        .control-btn.sharing {
+            background: #fbbf24;
+            border-color: #fbbf24;
+            color: var(--bg-dark);
         }
 
         .hidden {
             display: none !important;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .video-container {
-                grid-template-columns: 1fr;
-            }
-
-            .card {
-                padding: 1.5rem;
-            }
-
-            .modal {
-                padding: 1.5rem;
-                width: 95%;
-            }
-
+            h1 { font-size: 2.5rem; }
+            .video-grid { grid-template-columns: 1fr; }
+            .card { padding: 1.5rem; }
+            .modal { padding: 1.5rem; width: 95%; }
             .room-code-display {
                 top: 1rem;
                 right: 1rem;
@@ -548,10 +499,7 @@
                 max-width: none;
                 padding: 1rem;
             }
-
-            .room-code-display .code {
-                font-size: 0.85rem;
-            }
+            .room-code-display .code { font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -561,13 +509,12 @@
     <div class="container">
         <header>
             <h1>CONNECT</h1>
-            <p class="subtitle">Peer-to-peer video chat</p>
+            <p class="subtitle">Multi-user video chat • Up to 20 people</p>
         </header>
 
-        <!-- Setup Screen -->
         <div class="setup-screen" id="setupScreen">
             <div class="card">
-                <h2>Start a Call</h2>
+                <h2>Create Room</h2>
                 <button id="createRoomBtn">Create Room</button>
             </div>
 
@@ -577,13 +524,12 @@
                 <h2>Join Room</h2>
                 <div class="input-group">
                     <label for="joinCode">Enter Room Code</label>
-                    <input type="text" id="joinCode" placeholder="Enter code">
+                    <input type="text" id="joinCode" placeholder="Paste room code">
                 </div>
                 <button id="joinRoomBtn">Join Room</button>
             </div>
         </div>
 
-        <!-- Media Permission Modal -->
         <div class="modal-overlay hidden" id="permissionModal">
             <div class="modal">
                 <h3>🎥 Camera and Microphone Access</h3>
@@ -607,7 +553,7 @@
 
                 <div class="info-box tip">
                     <small style="color: var(--text-dim);">
-                        💡 <strong>Tip:</strong> When your browser asks for permission, click "Allow" to enable video calling.
+                        💡 <strong>Tip:</strong> Click "Allow" when your browser asks for permission.
                     </small>
                 </div>
 
@@ -622,45 +568,41 @@
             </div>
         </div>
 
-        <!-- Room Code Display (Top Right) -->
         <div class="room-code-display hidden" id="roomCodeDisplay">
             <div class="label">Share this code</div>
             <div class="code" id="roomCode"></div>
             <button class="copy-btn" id="copyBtn">Copy Code</button>
         </div>
 
-        <!-- Chat Screen -->
         <div class="chat-screen" id="chatScreen">
             <div class="status" id="status">
                 <span id="statusText">Initializing...</span>
+                <span class="participant-count" id="participantCount">0</span>
             </div>
 
-            <div class="video-container">
-                <div class="video-wrapper">
-                    <video id="localVideo" autoplay muted playsinline></video>
-                    <div class="video-label">You</div>
-                </div>
-                <div class="video-wrapper">
-                    <video id="remoteVideo" autoplay playsinline></video>
-                    <div class="video-label">Guest</div>
-                </div>
+            <div class="video-grid" id="videoGrid">
+                <!-- Videos will be added here dynamically -->
             </div>
 
             <div class="controls">
                 <button class="control-btn active" id="toggleVideo" title="Toggle Camera">📹</button>
                 <button class="control-btn active" id="toggleAudio" title="Toggle Microphone">🎤</button>
-                <button class="control-btn danger" id="endCall" title="End Call">📞</button>
+                <button class="control-btn" id="shareScreen" title="Share Screen">🖥️</button>
+                <button class="control-btn danger" id="endCall" title="Leave Call">📞</button>
             </div>
         </div>
     </div>
 
     <script>
         let localStream;
+        let screenStream;
         let peer;
-        let currentCall;
         let myPeerId;
+        let roomId;
+        let isHost = false;
+        let peers = {}; // Track all peer connections
+        let participants = new Set(); // Track participant IDs
 
-        // DOM elements
         const setupScreen = document.getElementById('setupScreen');
         const chatScreen = document.getElementById('chatScreen');
         const createRoomBtn = document.getElementById('createRoomBtn');
@@ -668,12 +610,12 @@
         const roomCodeDisplay = document.getElementById('roomCodeDisplay');
         const roomCodeEl = document.getElementById('roomCode');
         const joinCodeInput = document.getElementById('joinCode');
-        const localVideo = document.getElementById('localVideo');
-        const remoteVideo = document.getElementById('remoteVideo');
+        const videoGrid = document.getElementById('videoGrid');
         const statusText = document.getElementById('statusText');
-        const statusEl = document.getElementById('status');
+        const participantCount = document.getElementById('participantCount');
         const toggleVideoBtn = document.getElementById('toggleVideo');
         const toggleAudioBtn = document.getElementById('toggleAudio');
+        const shareScreenBtn = document.getElementById('shareScreen');
         const endCallBtn = document.getElementById('endCall');
         const permissionModal = document.getElementById('permissionModal');
         const allowPermission = document.getElementById('allowPermission');
@@ -685,7 +627,6 @@
         let pendingAction = null;
         let pendingRoomCode = null;
 
-        // Initialize local media stream
         async function initLocalStream() {
             try {
                 permissionError.classList.add('hidden');
@@ -694,36 +635,65 @@
                     video: true,
                     audio: true
                 });
-                localVideo.srcObject = localStream;
+                
+                console.log('Local stream acquired');
+                addVideoStream('local', localStream, 'You (Local)', true);
                 return true;
             } catch (error) {
-                console.error('Error accessing media devices:', error);
+                console.error('Error accessing media:', error);
                 
                 let errorMessage = '';
-                
                 if (error.name === 'NotAllowedError') {
-                    errorMessage = '⚠️ <strong>Permission Denied.</strong> To fix this:<br><br>';
-                    errorMessage += '• Click the camera icon in your browser\'s address bar<br>';
-                    errorMessage += '• Select "Always allow" for camera and microphone<br>';
-                    errorMessage += '• Click "Continue" again to retry';
+                    errorMessage = '⚠️ <strong>Permission Denied.</strong> Please allow camera and microphone access.';
                 } else if (error.name === 'NotFoundError') {
-                    errorMessage = '⚠️ <strong>No camera or microphone found.</strong> Please connect a webcam and microphone, then try again.';
-                } else if (error.name === 'NotReadableError') {
-                    errorMessage = '⚠️ <strong>Device in use.</strong> Your camera or microphone is already being used by another application. Please close other apps and try again.';
+                    errorMessage = '⚠️ <strong>No camera/microphone found.</strong>';
                 } else {
-                    errorMessage = '⚠️ <strong>Error:</strong> ' + (error.message || 'Unable to access camera and microphone.');
+                    errorMessage = '⚠️ <strong>Error:</strong> ' + (error.message || 'Unable to access devices.');
                 }
                 
                 permissionErrorText.innerHTML = errorMessage;
                 permissionError.classList.remove('hidden');
-                
                 return false;
             }
         }
 
-        // Initialize PeerJS
+        function addVideoStream(id, stream, label, isLocal = false) {
+            // Remove existing video if it exists
+            const existing = document.getElementById(`video-${id}`);
+            if (existing) existing.remove();
+
+            const videoWrapper = document.createElement('div');
+            videoWrapper.className = `video-wrapper ${isLocal ? 'local' : ''}`;
+            videoWrapper.id = `video-${id}`;
+
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.autoplay = true;
+            video.playsinline = true;
+            if (isLocal) video.muted = true;
+            else {
+                video.volume = 1.0;
+                video.muted = false;
+            }
+
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'video-label';
+            labelDiv.textContent = label;
+
+            videoWrapper.appendChild(video);
+            videoWrapper.appendChild(labelDiv);
+            videoGrid.appendChild(videoWrapper);
+
+            // Ensure video plays
+            video.play().catch(e => console.log('Autoplay prevented:', e));
+        }
+
+        function removeVideoStream(id) {
+            const videoEl = document.getElementById(`video-${id}`);
+            if (videoEl) videoEl.remove();
+        }
+
         function initPeer() {
-            // Create a new peer with a random ID using free PeerJS cloud server
             peer = new Peer({
                 config: {
                     iceServers: [
@@ -735,39 +705,79 @@
 
             peer.on('open', (id) => {
                 myPeerId = id;
-                console.log('My peer ID is: ' + id);
+                console.log('My peer ID:', id);
+                
+                if (isHost) {
+                    roomId = id;
+                    roomCodeEl.textContent = id;
+                    roomCodeDisplay.classList.remove('hidden');
+                    updateStatus('Waiting for participants...');
+                    participants.add(myPeerId);
+                    updateParticipantCount();
+                }
             });
 
             peer.on('call', (call) => {
-                console.log('Receiving call...');
-                // Answer the call with our stream
+                console.log('Receiving call from:', call.peer);
+                
+                // Answer with our stream
                 call.answer(localStream);
-                currentCall = call;
-
+                
                 call.on('stream', (remoteStream) => {
-                    console.log('Received remote stream');
-                    remoteVideo.srcObject = remoteStream;
-                    updateStatus('Connected', 'connected');
+                    console.log('Received stream from:', call.peer);
+                    addVideoStream(call.peer, remoteStream, `User ${call.peer.substring(0, 6)}`);
+                    participants.add(call.peer);
+                    updateParticipantCount();
+                    updateStatus('Connected');
                 });
 
                 call.on('close', () => {
-                    updateStatus('Call ended', 'waiting');
+                    console.log('Call closed from:', call.peer);
+                    removeVideoStream(call.peer);
+                    participants.delete(call.peer);
+                    updateParticipantCount();
                 });
+
+                peers[call.peer] = call;
             });
 
             peer.on('error', (err) => {
                 console.error('Peer error:', err);
-                updateStatus('Connection error: ' + err.type, 'waiting');
+                if (err.type === 'peer-unavailable') {
+                    updateStatus('Room not found. Check the code.');
+                }
             });
         }
 
-        // Create room
+        function connectToNewUser(userId) {
+            console.log('Connecting to:', userId);
+            const call = peer.call(userId, localStream);
+            
+            if (!call) return;
+
+            call.on('stream', (remoteStream) => {
+                console.log('Connected to:', userId);
+                addVideoStream(userId, remoteStream, `User ${userId.substring(0, 6)}`);
+                participants.add(userId);
+                updateParticipantCount();
+                updateStatus('Connected');
+            });
+
+            call.on('close', () => {
+                console.log('Connection closed:', userId);
+                removeVideoStream(userId);
+                participants.delete(userId);
+                updateParticipantCount();
+            });
+
+            peers[userId] = call;
+        }
+
         createRoomBtn.addEventListener('click', () => {
             pendingAction = 'create';
             permissionModal.classList.remove('hidden');
         });
 
-        // Join room
         joinRoomBtn.addEventListener('click', () => {
             const code = joinCodeInput.value.trim();
             if (!code) {
@@ -779,7 +789,6 @@
             permissionModal.classList.remove('hidden');
         });
 
-        // Allow permission
         allowPermission.addEventListener('click', async () => {
             allowPermission.textContent = 'Requesting access...';
             allowPermission.disabled = true;
@@ -789,44 +798,46 @@
             allowPermission.textContent = 'Continue';
             allowPermission.disabled = false;
             
-            if (!success) {
-                return;
-            }
+            if (!success) return;
 
             permissionModal.classList.add('hidden');
 
             if (pendingAction === 'create') {
-                await startCreateRoom();
+                startCreateRoom();
             } else if (pendingAction === 'join') {
-                await startJoinRoom(pendingRoomCode);
+                startJoinRoom(pendingRoomCode);
             }
         });
 
-        // Cancel permission
         cancelPermission.addEventListener('click', () => {
             permissionModal.classList.add('hidden');
             permissionError.classList.add('hidden');
-            pendingAction = null;
-            pendingRoomCode = null;
         });
 
-        // Start create room
-        async function startCreateRoom() {
+        function startCreateRoom() {
+            isHost = true;
+            setupScreen.style.display = 'none';
+            chatScreen.style.display = 'block';
+            updateStatus('Creating room...');
+            initPeer();
+        }
+
+        function startJoinRoom(roomCode) {
+            isHost = false;
+            roomId = roomCode;
+            setupScreen.style.display = 'none';
+            chatScreen.style.display = 'block';
+            updateStatus('Joining room...');
+            
             initPeer();
             
-            // Wait for peer ID to be ready
-            peer.on('open', (id) => {
-                myPeerId = id;
-                roomCodeEl.textContent = id;
-                roomCodeDisplay.classList.remove('hidden');
-                
-                setupScreen.style.display = 'none';
-                chatScreen.style.display = 'block';
-                updateStatus('Waiting for someone to join...', 'waiting');
+            peer.on('open', () => {
+                participants.add(myPeerId);
+                updateParticipantCount();
+                connectToNewUser(roomCode);
             });
         }
 
-        // Copy room code to clipboard
         copyBtn.addEventListener('click', async () => {
             const code = roomCodeEl.textContent;
             try {
@@ -838,75 +849,10 @@
                     copyBtn.classList.remove('copied');
                 }, 2000);
             } catch (err) {
-                console.error('Failed to copy:', err);
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = code;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    copyBtn.textContent = '✓ Copied!';
-                    copyBtn.classList.add('copied');
-                    setTimeout(() => {
-                        copyBtn.textContent = 'Copy Code';
-                        copyBtn.classList.remove('copied');
-                    }, 2000);
-                } catch (err2) {
-                    alert('Failed to copy. Please copy manually.');
-                }
-                document.body.removeChild(textArea);
+                alert('Failed to copy. Code: ' + code);
             }
         });
 
-        // Start join room
-        async function startJoinRoom(roomCode) {
-            initPeer();
-            
-            // Wait for peer to be ready before calling
-            peer.on('open', () => {
-                updateStatus('Connecting to peer...', 'waiting');
-                
-                // Clean the room code (remove any extra spaces)
-                const cleanCode = roomCode.trim();
-                
-                // Small delay to ensure host is ready
-                setTimeout(() => {
-                    // Make the call
-                    const call = peer.call(cleanCode, localStream);
-                    currentCall = call;
-
-                    if (!call) {
-                        updateStatus('Failed to connect. Invalid room code.', 'waiting');
-                        return;
-                    }
-
-                    call.on('stream', (remoteStream) => {
-                        console.log('Received remote stream');
-                        remoteVideo.srcObject = remoteStream;
-                        updateStatus('Connected', 'connected');
-                    });
-
-                    call.on('close', () => {
-                        updateStatus('Call ended', 'waiting');
-                    });
-
-                    call.on('error', (err) => {
-                        console.error('Call error:', err);
-                        if (err.type === 'peer-unavailable') {
-                            updateStatus('Peer not found. Make sure they created a room and are waiting.', 'waiting');
-                        } else {
-                            updateStatus('Connection failed: ' + err.type, 'waiting');
-                        }
-                    });
-                }, 1000);
-
-                setupScreen.style.display = 'none';
-                chatScreen.style.display = 'block';
-            });
-        }
-
-        // Toggle video
         toggleVideoBtn.addEventListener('click', () => {
             const videoTrack = localStream.getVideoTracks()[0];
             if (videoTrack) {
@@ -916,7 +862,6 @@
             }
         });
 
-        // Toggle audio
         toggleAudioBtn.addEventListener('click', () => {
             const audioTrack = localStream.getAudioTracks()[0];
             if (audioTrack) {
@@ -926,34 +871,87 @@
             }
         });
 
-        // End call
+        shareScreenBtn.addEventListener('click', async () => {
+            if (screenStream) {
+                // Stop screen sharing
+                screenStream.getTracks().forEach(track => track.stop());
+                screenStream = null;
+                shareScreenBtn.classList.remove('sharing');
+                shareScreenBtn.textContent = '🖥️';
+                removeVideoStream('screen-share');
+                
+                // Reconnect with camera
+                Object.values(peers).forEach(call => {
+                    const newCall = peer.call(call.peer, localStream);
+                    peers[call.peer] = newCall;
+                });
+                return;
+            }
+
+            try {
+                screenStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { cursor: "always" },
+                    audio: false
+                });
+
+                // Add screen share video
+                addVideoStream('screen-share', screenStream, 'Your Screen Share', true);
+                const screenVideoEl = document.getElementById('video-screen-share');
+                if (screenVideoEl) screenVideoEl.classList.add('screen-share');
+
+                shareScreenBtn.classList.add('sharing');
+                shareScreenBtn.textContent = '⏹️';
+
+                // Replace video track in all peer connections
+                const videoTrack = screenStream.getVideoTracks()[0];
+                Object.values(peers).forEach(call => {
+                    const sender = call.peerConnection.getSenders().find(s => s.track?.kind === 'video');
+                    if (sender) sender.replaceTrack(videoTrack);
+                });
+
+                // Stop sharing when user stops from browser UI
+                videoTrack.onended = () => {
+                    screenStream = null;
+                    shareScreenBtn.classList.remove('sharing');
+                    shareScreenBtn.textContent = '🖥️';
+                    removeVideoStream('screen-share');
+                    
+                    // Switch back to camera
+                    const cameraTrack = localStream.getVideoTracks()[0];
+                    Object.values(peers).forEach(call => {
+                        const sender = call.peerConnection.getSenders().find(s => s.track?.kind === 'video');
+                        if (sender) sender.replaceTrack(cameraTrack);
+                    });
+                };
+
+            } catch (err) {
+                console.error('Screen share error:', err);
+                alert('Could not start screen sharing');
+            }
+        });
+
         endCallBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to end the call?')) {
+            if (confirm('Leave the call?')) {
                 cleanup();
                 location.reload();
             }
         });
 
-        // Update status
-        function updateStatus(text, type) {
+        function updateStatus(text) {
             statusText.textContent = text;
-            statusEl.className = `status ${type}`;
         }
 
-        // Cleanup
+        function updateParticipantCount() {
+            participantCount.textContent = participants.size;
+        }
+
         function cleanup() {
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-            }
-            if (currentCall) {
-                currentCall.close();
-            }
-            if (peer) {
-                peer.destroy();
-            }
+            if (localStream) localStream.getTracks().forEach(track => track.stop());
+            if (screenStream) screenStream.getTracks().forEach(track => track.stop());
+            Object.values(peers).forEach(call => call.close());
+            if (peer) peer.destroy();
         }
 
-        // Cleanup on page unload
         window.addEventListener('beforeunload', cleanup);
     </script>
 </body>
