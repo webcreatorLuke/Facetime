@@ -285,55 +285,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .permission-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--bg-light);
-            border-radius: 8px;
-            margin-bottom: 0.8rem;
-        }
-
-        .permission-icon {
-            font-size: 1.5rem;
-        }
-
-        .permission-text h4 {
-            color: var(--text);
-            margin-bottom: 0.2rem;
-            font-size: 1rem;
-        }
-
-        .permission-text small {
-            color: var(--text-dim);
-            font-size: 0.85rem;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .modal-buttons button {
-            flex: 1;
-        }
-
-        .modal-buttons button:nth-child(2) {
-            flex: 0 0 auto;
-            min-width: 60px;
-        }
-
-        .btn-secondary {
-            background: var(--bg-light);
-            color: var(--text);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-medium);
-        }
-
         .info-box {
             margin-top: 1rem;
             padding: 1rem;
@@ -350,6 +301,15 @@
         .info-box.warning {
             background: rgba(255, 187, 0, 0.1);
             border-left-color: #fbbf24;
+        }
+
+        .info-box.error {
+            background: rgba(255, 68, 68, 0.1);
+            border-left-color: var(--error);
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         .chat-screen {
@@ -387,7 +347,6 @@
             margin-bottom: 2rem;
         }
 
-        /* Optimize grid for performance */
         @media (max-width: 768px) {
             .video-grid {
                 grid-template-columns: 1fr;
@@ -395,7 +354,6 @@
             }
         }
 
-        /* Limit videos on screen for better performance */
         @media (min-width: 769px) {
             .video-grid {
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -492,10 +450,6 @@
             color: var(--bg-dark);
         }
 
-        .hidden {
-            display: none !important;
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -526,7 +480,6 @@
             }
             .modal h3 { font-size: 1.3rem; }
             .modal h4 { font-size: 1rem; }
-            .permission-item { padding: 0.8rem; }
             .info-box { padding: 0.8rem; font-size: 0.8rem; }
             .room-code-display {
                 top: 1rem;
@@ -574,100 +527,27 @@
             </div>
         </div>
 
-        <div class="modal-overlay hidden" id="permissionModal">
+        <div class="modal-overlay hidden" id="errorModal">
             <div class="modal">
-                <h3>🎥 Enable Camera & Microphone</h3>
-                <p>To join the video call, we need permission to use your camera and microphone.</p>
+                <h3>⚠️ Permission Required</h3>
+                <p>We need access to your camera and microphone to join the video call.</p>
                 
-                <div class="permission-item">
-                    <div class="permission-icon">📹</div>
-                    <div class="permission-text">
-                        <h4>Camera</h4>
-                        <small>Share your video with others</small>
-                    </div>
+                <div class="info-box error">
+                    <small style="color: var(--text-dim);" id="errorText"></small>
                 </div>
 
-                <div class="permission-item">
-                    <div class="permission-icon">🎤</div>
-                    <div class="permission-text">
-                        <h4>Microphone</h4>
-                        <small>Share your audio with others</small>
-                    </div>
-                </div>
-
-                <div class="info-box tip">
+                <div class="info-box tip" style="margin-top: 1rem;">
                     <small style="color: var(--text-dim);">
-                        <strong>What happens next:</strong><br>
-                        1️⃣ Click "Allow Access" below<br>
-                        2️⃣ Your device will ask for permission<br>
-                        3️⃣ Tap "Allow" or "OK" on that popup<br>
-                        4️⃣ You'll join the call!
+                        <strong>How to fix:</strong><br>
+                        1. Check your browser address bar for a camera/microphone icon<br>
+                        2. Click it and select "Allow"<br>
+                        3. Refresh the page and try again<br><br>
+                        <strong>On mobile/app:</strong><br>
+                        Go to Settings → Find this app → Enable Camera & Microphone
                     </small>
                 </div>
 
-                <div class="info-box warning" id="mobileAudioWarning" style="display: none;">
-                    <small style="color: var(--text-dim);">
-                        📱 <strong>Mobile Tip:</strong> If you can't hear others after connecting, use the 🔊 Fix Audio button!
-                    </small>
-                </div>
-
-                <div class="info-box warning hidden" id="permissionError">
-                    <small style="color: var(--text-dim);" id="permissionErrorText"></small>
-                </div>
-
-                <div class="modal-buttons">
-                    <button class="btn-secondary" id="cancelPermission">Cancel</button>
-                    <button class="btn-secondary" id="helpPermission" style="padding: 0.6rem;">❓</button>
-                    <button id="allowPermission">Allow Access</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal-overlay hidden" id="helpModal">
-            <div class="modal">
-                <h3>📱 Permission Help</h3>
-                
-                <div style="margin-bottom: 1.5rem;">
-                    <h4 style="color: var(--accent); margin-bottom: 0.5rem;">For Mobile App Users:</h4>
-                    <div class="info-box tip">
-                        <small>
-                            <strong>iPhone/iPad:</strong><br>
-                            1. Go to Settings<br>
-                            2. Scroll down and find this app<br>
-                            3. Enable Camera and Microphone<br>
-                            4. Close and reopen the app<br><br>
-                            
-                            <strong>Android:</strong><br>
-                            1. Go to Settings → Apps<br>
-                            2. Find this app<br>
-                            3. Tap Permissions<br>
-                            4. Enable Camera and Microphone<br>
-                            5. Reopen the app
-                        </small>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 1.5rem;">
-                    <h4 style="color: var(--accent); margin-bottom: 0.5rem;">For Browser Users:</h4>
-                    <div class="info-box tip">
-                        <small>
-                            • Look for a camera icon in the address bar<br>
-                            • Click it and select "Allow"<br>
-                            • Refresh the page if needed
-                        </small>
-                    </div>
-                </div>
-
-                <button id="closeHelp" style="width: 100%;">Got It</button>
-            </div>
-        </div>
-
-        <div class="modal-overlay hidden" id="successModal">
-            <div class="modal" style="text-align: center;">
-                <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
-                <h3 style="color: var(--accent);">Ready to Connect!</h3>
-                <p>Camera and microphone are working.</p>
-                <button id="continueToCall" style="margin-top: 1rem;">Join Call Now</button>
+                <button id="closeError" style="margin-top: 1.5rem;">OK</button>
             </div>
         </div>
 
@@ -704,8 +584,8 @@
         let myPeerId;
         let roomId;
         let isHost = false;
-        let peers = {}; // Track all peer connections
-        let participants = new Set(); // Track participant IDs
+        let peers = {};
+        let participants = new Set();
 
         const setupScreen = document.getElementById('setupScreen');
         const chatScreen = document.getElementById('chatScreen');
@@ -722,23 +602,13 @@
         const fixAudioBtn = document.getElementById('fixAudio');
         const shareScreenBtn = document.getElementById('shareScreen');
         const endCallBtn = document.getElementById('endCall');
-        const permissionModal = document.getElementById('permissionModal');
-        const allowPermission = document.getElementById('allowPermission');
-        const cancelPermission = document.getElementById('cancelPermission');
-        const helpPermission = document.getElementById('helpPermission');
-        const permissionError = document.getElementById('permissionError');
-        const permissionErrorText = document.getElementById('permissionErrorText');
-        const helpModal = document.getElementById('helpModal');
-        const closeHelp = document.getElementById('closeHelp');
-        const successModal = document.getElementById('successModal');
-        const continueToCall = document.getElementById('continueToCall');
+        const errorModal = document.getElementById('errorModal');
+        const errorText = document.getElementById('errorText');
+        const closeError = document.getElementById('closeError');
         const copyBtn = document.getElementById('copyBtn');
 
-        let pendingAction = null;
-        let pendingRoomCode = null;
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-        // Optimized video constraints based on device
         const getMediaConstraints = () => {
             if (isMobile) {
                 return {
@@ -771,15 +641,12 @@
 
         async function initLocalStream() {
             try {
-                permissionError.classList.add('hidden');
-                
                 localStream = await navigator.mediaDevices.getUserMedia(getMediaConstraints());
                 
                 console.log('Local stream acquired');
                 console.log('Audio tracks:', localStream.getAudioTracks().length);
                 console.log('Video tracks:', localStream.getVideoTracks().length);
                 
-                // Ensure audio is enabled
                 localStream.getAudioTracks().forEach(track => {
                     track.enabled = true;
                     console.log('Audio track enabled:', track.label);
@@ -792,31 +659,24 @@
                 
                 let errorMessage = '';
                 if (error.name === 'NotAllowedError') {
-                    errorMessage = '⚠️ <strong>Permission Denied.</strong><br><br>';
-                    errorMessage += '<strong>If you\'re using an app:</strong><br>';
-                    errorMessage += '1. Go to your device Settings<br>';
-                    errorMessage += '2. Find this app in the app list<br>';
-                    errorMessage += '3. Enable Camera and Microphone permissions<br>';
-                    errorMessage += '4. Close and reopen this app<br><br>';
-                    errorMessage += '<strong>If you\'re in a browser:</strong><br>';
-                    errorMessage += '1. Click the camera icon in the address bar<br>';
-                    errorMessage += '2. Select "Allow" for camera and microphone<br>';
-                    errorMessage += '3. Click "Allow Access" again';
+                    errorMessage = '<strong>Permission Denied</strong><br><br>';
+                    errorMessage += 'You need to allow camera and microphone access.<br><br>';
+                    errorMessage += '<strong>In Browser:</strong> Click the camera icon in the address bar and select "Allow"<br><br>';
+                    errorMessage += '<strong>On Mobile/App:</strong> Go to Settings → Find this app → Enable Camera & Microphone permissions';
                 } else if (error.name === 'NotFoundError') {
-                    errorMessage = '⚠️ <strong>No camera or microphone found.</strong><br><br>';
+                    errorMessage = '<strong>No camera or microphone found</strong><br><br>';
                     errorMessage += 'Make sure your device has a working camera and microphone.';
                 } else {
-                    errorMessage = '⚠️ <strong>Error:</strong> ' + (error.message || 'Unable to access devices.');
+                    errorMessage = '<strong>Error:</strong> ' + (error.message || 'Unable to access camera/microphone.');
                 }
                 
-                permissionErrorText.innerHTML = errorMessage;
-                permissionError.classList.remove('hidden');
+                errorText.innerHTML = errorMessage;
+                errorModal.classList.remove('hidden');
                 return false;
             }
         }
 
         function addVideoStream(id, stream, label, isLocal = false) {
-            // Remove existing video if it exists
             const existing = document.getElementById(`video-${id}`);
             if (existing) existing.remove();
 
@@ -829,18 +689,14 @@
             video.autoplay = true;
             video.playsinline = true;
             
-            // Critical for mobile audio
             if (isLocal) {
                 video.muted = true;
             } else {
                 video.muted = false;
                 video.volume = 1.0;
-                
-                // Set additional audio attributes for mobile compatibility
                 video.setAttribute('webkit-playsinline', 'true');
                 video.setAttribute('playsinline', 'true');
                 
-                // Log audio tracks for debugging
                 const audioTracks = stream.getAudioTracks();
                 console.log(`Stream ${id} audio tracks:`, audioTracks.length);
                 audioTracks.forEach(track => {
@@ -856,21 +712,15 @@
             videoWrapper.appendChild(labelDiv);
             videoGrid.appendChild(videoWrapper);
 
-            // Ensure video plays - critical for mobile
             const playPromise = video.play();
             if (playPromise !== undefined) {
                 playPromise
                     .then(() => {
                         console.log(`Video ${id} playing successfully`);
-                        if (!isLocal) {
-                            console.log(`Audio should be working for ${id}`);
-                        }
                     })
                     .catch(e => {
                         console.error(`Autoplay failed for ${id}:`, e);
-                        // On mobile, might need user interaction
                         if (!isLocal) {
-                            // Try again on next user interaction
                             document.addEventListener('click', () => {
                                 video.play().catch(err => console.log('Still cannot play:', err));
                             }, { once: true });
@@ -878,7 +728,6 @@
                     });
             }
             
-            // For remote streams, ensure audio context is running (iOS fix)
             if (!isLocal && typeof AudioContext !== 'undefined') {
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -926,17 +775,12 @@
 
             peer.on('call', (call) => {
                 console.log('Receiving call from:', call.peer);
-                
-                // Answer with our stream
                 call.answer(localStream);
-                
-                // Set up optimized connection
                 setupOptimizedConnection(call);
                 
                 call.on('stream', (remoteStream) => {
                     console.log('Received stream from:', call.peer);
                     
-                    // Ensure all audio tracks are enabled
                     remoteStream.getAudioTracks().forEach(track => {
                         track.enabled = true;
                         console.log('Remote audio track enabled:', track.label);
@@ -967,11 +811,9 @@
         }
 
         function setupOptimizedConnection(call) {
-            // Optimize the peer connection for lower latency
             if (call.peerConnection) {
                 const pc = call.peerConnection;
                 
-                // Get all senders and optimize video encoding
                 pc.getSenders().forEach(sender => {
                     if (sender.track && sender.track.kind === 'video') {
                         const parameters = sender.getParameters();
@@ -979,11 +821,10 @@
                             parameters.encodings = [{}];
                         }
                         
-                        // Set max bitrate based on device
                         if (isMobile) {
-                            parameters.encodings[0].maxBitrate = 500000; // 500 kbps for mobile
+                            parameters.encodings[0].maxBitrate = 500000;
                         } else {
-                            parameters.encodings[0].maxBitrate = 1500000; // 1.5 Mbps for desktop
+                            parameters.encodings[0].maxBitrate = 1500000;
                         }
                         
                         sender.setParameters(parameters)
@@ -999,13 +840,11 @@
             
             if (!call) return;
 
-            // Set up optimized connection
             setupOptimizedConnection(call);
 
             call.on('stream', (remoteStream) => {
                 console.log('Connected to:', userId);
                 
-                // Ensure all audio tracks are enabled
                 remoteStream.getAudioTracks().forEach(track => {
                     track.enabled = true;
                     console.log('Remote audio track enabled:', track.label);
@@ -1027,115 +866,75 @@
             peers[userId] = call;
         }
 
-        createRoomBtn.addEventListener('click', () => {
-            pendingAction = 'create';
-            permissionModal.classList.remove('hidden');
-            if (isMobile) {
-                document.getElementById('mobileAudioWarning').style.display = 'block';
+        createRoomBtn.addEventListener('click', async () => {
+            createRoomBtn.textContent = 'Requesting permissions...';
+            createRoomBtn.disabled = true;
+            
+            const success = await initLocalStream();
+            
+            createRoomBtn.textContent = 'Create Room';
+            createRoomBtn.disabled = false;
+            
+            if (success) {
+                isHost = true;
+                setupScreen.style.display = 'none';
+                chatScreen.style.display = 'block';
+                updateStatus('Creating room...');
+                initPeer();
+                
+                if (isMobile) {
+                    setTimeout(() => {
+                        if (participants.size > 1) {
+                            updateStatus('📱 On mobile? Tap 🔊 button if you can\'t hear others');
+                            setTimeout(() => updateStatus('Connected'), 4000);
+                        }
+                    }, 3000);
+                }
             }
         });
 
-        joinRoomBtn.addEventListener('click', () => {
+        joinRoomBtn.addEventListener('click', async () => {
             const code = joinCodeInput.value.trim();
             if (!code) {
                 alert('Please enter a room code');
                 return;
             }
-            pendingRoomCode = code;
-            pendingAction = 'join';
-            permissionModal.classList.remove('hidden');
-            if (isMobile) {
-                document.getElementById('mobileAudioWarning').style.display = 'block';
-            }
-        });
-
-        allowPermission.addEventListener('click', async () => {
-            allowPermission.textContent = 'Requesting access...';
-            allowPermission.disabled = true;
+            
+            joinRoomBtn.textContent = 'Requesting permissions...';
+            joinRoomBtn.disabled = true;
             
             const success = await initLocalStream();
             
-            allowPermission.textContent = 'Allow Access';
-            allowPermission.disabled = false;
+            joinRoomBtn.textContent = 'Join Room';
+            joinRoomBtn.disabled = false;
             
-            if (!success) return;
-
-            // Hide permission modal
-            permissionModal.classList.add('hidden');
-            
-            // Show success modal
-            successModal.classList.remove('hidden');
-        });
-
-        // Continue to call after success modal
-        continueToCall.addEventListener('click', () => {
-            successModal.classList.add('hidden');
-            
-            if (pendingAction === 'create') {
-                startCreateRoom();
-            } else if (pendingAction === 'join') {
-                startJoinRoom(pendingRoomCode);
-            }
-        });
-
-        cancelPermission.addEventListener('click', () => {
-            permissionModal.classList.add('hidden');
-            permissionError.classList.add('hidden');
-        });
-
-        // Show help modal
-        helpPermission.addEventListener('click', () => {
-            permissionModal.classList.add('hidden');
-            helpModal.classList.remove('hidden');
-        });
-
-        // Close help modal
-        closeHelp.addEventListener('click', () => {
-            helpModal.classList.add('hidden');
-            permissionModal.classList.remove('hidden');
-        });
-
-        function startCreateRoom() {
-            isHost = true;
-            setupScreen.style.display = 'none';
-            chatScreen.style.display = 'block';
-            updateStatus('Creating room...');
-            initPeer();
-            
-            // Show mobile audio tip
-            if (isMobile) {
-                setTimeout(() => {
-                    if (participants.size > 1) {
-                        updateStatus('📱 On mobile? Tap 🔊 button if you can\'t hear others');
-                        setTimeout(() => updateStatus('Connected'), 4000);
-                    }
-                }, 3000);
-            }
-        }
-
-        function startJoinRoom(roomCode) {
-            isHost = false;
-            roomId = roomCode;
-            setupScreen.style.display = 'none';
-            chatScreen.style.display = 'block';
-            updateStatus('Joining room...');
-            
-            initPeer();
-            
-            peer.on('open', () => {
-                participants.add(myPeerId);
-                updateParticipantCount();
-                connectToNewUser(roomCode);
+            if (success) {
+                isHost = false;
+                roomId = code;
+                setupScreen.style.display = 'none';
+                chatScreen.style.display = 'block';
+                updateStatus('Joining room...');
                 
-                // Show mobile audio tip
-                if (isMobile) {
-                    setTimeout(() => {
-                        updateStatus('📱 On mobile? Tap 🔊 button if you can\'t hear others');
-                        setTimeout(() => updateStatus('Connected'), 4000);
-                    }, 3000);
-                }
-            });
-        }
+                initPeer();
+                
+                peer.on('open', () => {
+                    participants.add(myPeerId);
+                    updateParticipantCount();
+                    connectToNewUser(code);
+                    
+                    if (isMobile) {
+                        setTimeout(() => {
+                            updateStatus('📱 On mobile? Tap 🔊 button if you can\'t hear others');
+                            setTimeout(() => updateStatus('Connected'), 4000);
+                        }, 3000);
+                    }
+                });
+            }
+        });
+
+        closeError.addEventListener('click', () => {
+            errorModal.classList.add('hidden');
+        });
 
         copyBtn.addEventListener('click', async () => {
             const code = roomCodeEl.textContent;
@@ -1170,20 +969,16 @@
             }
         });
 
-        // Fix Audio button - helps with mobile audio issues
         fixAudioBtn.addEventListener('click', () => {
             console.log('Attempting to fix audio...');
             
-            // Find all video elements except local
             const videos = document.querySelectorAll('.video-wrapper:not(.local) video');
             let fixed = 0;
             
             videos.forEach(video => {
-                // Unmute
                 video.muted = false;
                 video.volume = 1.0;
                 
-                // Try to play
                 video.play()
                     .then(() => {
                         console.log('Successfully played video');
@@ -1192,7 +987,6 @@
                     .catch(e => console.log('Could not play video:', e));
             });
             
-            // Visual feedback
             fixAudioBtn.classList.add('active');
             fixAudioBtn.textContent = '✓';
             setTimeout(() => {
@@ -1206,14 +1000,12 @@
 
         shareScreenBtn.addEventListener('click', async () => {
             if (screenStream) {
-                // Stop screen sharing
                 screenStream.getTracks().forEach(track => track.stop());
                 screenStream = null;
                 shareScreenBtn.classList.remove('sharing');
                 shareScreenBtn.textContent = '🖥️';
                 removeVideoStream('screen-share');
                 
-                // Reconnect with camera
                 Object.values(peers).forEach(call => {
                     const newCall = peer.call(call.peer, localStream);
                     peers[call.peer] = newCall;
@@ -1227,7 +1019,6 @@
                     audio: false
                 });
 
-                // Add screen share video
                 addVideoStream('screen-share', screenStream, 'Your Screen Share', true);
                 const screenVideoEl = document.getElementById('video-screen-share');
                 if (screenVideoEl) screenVideoEl.classList.add('screen-share');
@@ -1235,21 +1026,18 @@
                 shareScreenBtn.classList.add('sharing');
                 shareScreenBtn.textContent = '⏹️';
 
-                // Replace video track in all peer connections
                 const videoTrack = screenStream.getVideoTracks()[0];
                 Object.values(peers).forEach(call => {
                     const sender = call.peerConnection.getSenders().find(s => s.track?.kind === 'video');
                     if (sender) sender.replaceTrack(videoTrack);
                 });
 
-                // Stop sharing when user stops from browser UI
                 videoTrack.onended = () => {
                     screenStream = null;
                     shareScreenBtn.classList.remove('sharing');
                     shareScreenBtn.textContent = '🖥️';
                     removeVideoStream('screen-share');
                     
-                    // Switch back to camera
                     const cameraTrack = localStream.getVideoTracks()[0];
                     Object.values(peers).forEach(call => {
                         const sender = call.peerConnection.getSenders().find(s => s.track?.kind === 'video');
@@ -1277,7 +1065,6 @@
         function updateParticipantCount() {
             participantCount.textContent = participants.size;
             
-            // Warn if too many participants for optimal performance
             if (participants.size > 8 && isMobile) {
                 updateStatus('⚠️ Performance may be slow with 8+ people on mobile');
             } else if (participants.size > 15) {
