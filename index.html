@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facetime</title>
+    <title>NEXUS - Multi-User Video Chat</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -15,23 +15,14 @@
         body {
             min-height: 100vh;
             background: linear-gradient(to bottom right, #020617, #1e3a8a, #0f172a);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
             font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
 
         .glow {
             box-shadow: 0 0 20px rgba(6, 182, 212, 0.5),
                         0 0 40px rgba(6, 182, 212, 0.3),
                         0 0 60px rgba(6, 182, 212, 0.1);
-        }
-
-        .glow-hover:hover {
-            box-shadow: 0 0 30px rgba(6, 182, 212, 0.6),
-                        0 0 50px rgba(6, 182, 212, 0.4),
-                        0 0 70px rgba(6, 182, 212, 0.2);
         }
 
         .text-glow {
@@ -49,15 +40,6 @@
             background-size: 50px 50px;
             pointer-events: none;
             z-index: -1;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .pulse-glow {
-            animation: pulse-glow 2s ease-in-out infinite;
         }
 
         @keyframes slideUp {
@@ -83,13 +65,17 @@
             display: none !important;
         }
 
-        .container {
-            max-width: 28rem;
-            width: 100%;
+        /* Home Screen */
+        .home-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
 
-        .container-large {
-            max-width: 80rem;
+        .home-content {
+            max-width: 28rem;
             width: 100%;
         }
 
@@ -99,7 +85,7 @@
             font-weight: 900;
             color: #06b6d4;
             text-align: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.5rem;
         }
 
         .subtitle {
@@ -107,7 +93,15 @@
             font-size: 0.875rem;
             letter-spacing: 0.1em;
             text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .capacity {
+            color: #22d3ee;
+            font-size: 0.75rem;
+            text-align: center;
             margin-bottom: 2rem;
+            font-weight: 500;
         }
 
         .btn {
@@ -125,6 +119,7 @@
         .btn-primary {
             background: linear-gradient(to right, #06b6d4, #3b82f6);
             color: white;
+            margin-bottom: 1rem;
         }
 
         .btn-primary:hover {
@@ -139,35 +134,6 @@
 
         .btn-secondary:hover {
             background: #334155;
-            border-color: #22d3ee;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            border: 2px solid #ef4444;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .input-code {
-            width: 100%;
-            background: rgba(15, 23, 42, 0.5);
-            border: 2px solid #0e7490;
-            color: #a5f3fc;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            text-align: center;
-            font-size: 1.5rem;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-        }
-
-        .input-code:focus {
-            outline: none;
             border-color: #22d3ee;
         }
 
@@ -196,6 +162,26 @@
             transform: translateX(-50%);
         }
 
+        .input-code {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.5);
+            border: 2px solid #0e7490;
+            color: #a5f3fc;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            margin-bottom: 0.75rem;
+        }
+
+        .input-code:focus {
+            outline: none;
+            border-color: #22d3ee;
+        }
+
         .error {
             background: rgba(127, 29, 29, 0.3);
             border: 1px solid #ef4444;
@@ -207,70 +193,141 @@
             margin-top: 1rem;
         }
 
-        .waiting-box {
-            background: rgba(15, 23, 42, 0.7);
+        /* Room Screen */
+        .room-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .room-header {
+            background: rgba(15, 23, 42, 0.9);
             backdrop-filter: blur(12px);
-            border: 2px solid #0e7490;
-            border-radius: 1rem;
-            padding: 2rem;
+            border-bottom: 2px solid #0e7490;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .waiting-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #67e8f9;
-            text-align: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .waiting-subtitle {
-            color: #06b6d4;
-            font-size: 0.875rem;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-
-        .code-display {
+        .room-info {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
+            gap: 1rem;
         }
 
-        .code-number {
+        .room-code-badge {
+            background: rgba(6, 182, 212, 0.2);
+            border: 2px solid #06b6d4;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .room-code-text {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            font-weight: 900;
+            font-size: 1.25rem;
+            font-weight: 700;
             color: #22d3ee;
             letter-spacing: 0.1em;
         }
 
-        .copy-btn {
+        .participant-count {
+            color: #67e8f9;
+            font-size: 0.875rem;
+        }
+
+        .participant-count span {
+            font-weight: 700;
+            color: #22d3ee;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
             padding: 0.75rem;
-            background: rgba(6, 182, 212, 0.2);
-            border: none;
             border-radius: 0.5rem;
+            border: 2px solid #0891b2;
+            background: #1e293b;
+            color: #67e8f9;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: #334155;
+        }
+
+        .icon-btn.off {
+            background: #dc2626;
+            border-color: #ef4444;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            border: 2px solid #ef4444;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
             cursor: pointer;
             transition: background 0.3s;
         }
 
-        .copy-btn:hover {
-            background: rgba(6, 182, 212, 0.4);
+        .btn-danger:hover {
+            background: #b91c1c;
         }
 
-        .video-preview {
+        /* Video Grid */
+        .video-grid-container {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .video-grid {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+
+        /* Responsive grid for different participant counts */
+        @media (min-width: 640px) {
+            .video-grid.count-1 { grid-template-columns: 1fr; }
+            .video-grid.count-2 { grid-template-columns: repeat(2, 1fr); }
+            .video-grid.count-3, .video-grid.count-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 1024px) {
+            .video-grid.count-5, .video-grid.count-6 { grid-template-columns: repeat(3, 1fr); }
+            .video-grid.count-7, .video-grid.count-8, .video-grid.count-9 { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (min-width: 1280px) {
+            .video-grid.count-10, .video-grid.count-11, .video-grid.count-12 { grid-template-columns: repeat(4, 1fr); }
+            .video-grid.count-13, .video-grid.count-14, .video-grid.count-15, .video-grid.count-16 { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        .video-tile {
             position: relative;
             aspect-ratio: 16/9;
             background: #020617;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             overflow: hidden;
             border: 2px solid #164e63;
-            margin-bottom: 1rem;
         }
 
-        .video-preview video {
+        .video-tile.self {
+            border-color: #0891b2;
+        }
+
+        .video-tile video {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -281,103 +338,81 @@
             inset: 0;
             background: #0f172a;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-        }
-
-        .video-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        @media (min-width: 1024px) {
-            .video-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .video-container {
-            position: relative;
-            aspect-ratio: 16/9;
-            background: #020617;
-            border-radius: 1rem;
-            overflow: hidden;
-            border: 2px solid #0e7490;
-        }
-
-        .video-container.primary {
-            border-color: #0e7490;
-        }
-
-        .video-container.secondary {
-            border-color: #164e63;
+            gap: 0.5rem;
         }
 
         .video-label {
             position: absolute;
-            top: 1rem;
-            left: 1rem;
-            background: rgba(15, 23, 42, 0.8);
+            bottom: 0.75rem;
+            left: 0.75rem;
+            background: rgba(15, 23, 42, 0.9);
             backdrop-filter: blur(4px);
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
             border: 1px solid #0891b2;
         }
 
-        .video-label span {
+        .video-label-text {
             color: #67e8f9;
             font-size: 0.875rem;
             font-weight: 600;
         }
 
-        .controls {
+        .audio-indicator {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: rgba(220, 38, 38, 0.9);
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 1rem;
         }
 
-        .control-btn {
-            padding: 1.25rem;
-            border-radius: 9999px;
-            border: 2px solid #0891b2;
-            background: #1e293b;
-            color: #67e8f9;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .control-btn:hover {
-            background: #334155;
-        }
-
-        .control-btn.off {
-            background: #dc2626;
-            border-color: #ef4444;
-            color: white;
-        }
-
-        .control-btn.off:hover {
-            background: #b91c1c;
-        }
-
-        .space-y-4 > * + * {
-            margin-top: 1rem;
-        }
-
-        .space-y-3 > * + * {
-            margin-top: 0.75rem;
+        .audio-indicator.active {
+            background: rgba(34, 197, 94, 0.9);
         }
 
         svg {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
         }
 
         .icon-lg {
+            width: 48px;
+            height: 48px;
+        }
+
+        .copy-btn {
+            padding: 0.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #67e8f9;
+            transition: color 0.3s;
+        }
+
+        .copy-btn:hover {
+            color: #22d3ee;
+        }
+
+        .user-avatar {
             width: 64px;
             height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
         }
     </style>
 </head>
@@ -385,22 +420,23 @@
     <div class="grid-pattern"></div>
 
     <!-- Home Screen -->
-    <div id="homeScreen" class="container slide-up">
-        <div class="text-center">
-            <h1 class="title text-glow">NEXUS</h1>
-            <p class="subtitle">PEER-TO-PEER VIDEO CHAT</p>
-        </div>
-
-        <div class="space-y-4">
-            <button class="btn btn-primary glow glow-hover" onclick="createRoom()">
-                CREATE ROOM
-            </button>
-
-            <div class="divider">
-                <span>OR</span>
+    <div id="homeScreen" class="home-container">
+        <div class="home-content slide-up">
+            <div>
+                <h1 class="title text-glow">NEXUS</h1>
+                <p class="subtitle">MULTI-USER VIDEO CHAT</p>
+                <p class="capacity">SUPPORTS UP TO 100 PARTICIPANTS</p>
             </div>
 
-            <div class="space-y-3">
+            <div>
+                <button class="btn btn-primary glow" onclick="createRoom()">
+                    CREATE ROOM
+                </button>
+
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+
                 <input 
                     type="text" 
                     id="codeInput" 
@@ -412,74 +448,35 @@
                 <button class="btn btn-secondary" onclick="joinRoom()">
                     JOIN ROOM
                 </button>
-            </div>
 
-            <div id="errorMessage" class="error hidden"></div>
+                <div id="errorMessage" class="error hidden"></div>
+            </div>
         </div>
     </div>
 
-    <!-- Waiting Screen -->
-    <div id="waitingScreen" class="container hidden">
-        <div class="waiting-box glow slide-up">
-            <h2 class="waiting-title" id="waitingTitle">WAITING FOR GUEST</h2>
-            <p class="waiting-subtitle" id="waitingSubtitle">Share this code with your peer</p>
-            
-            <div id="codeDisplaySection" class="code-display hidden">
-                <div class="code-number pulse-glow" id="roomCodeDisplay"></div>
-                <button class="copy-btn" onclick="copyCode()">
-                    <svg id="copyIcon" fill="none" stroke="#67e8f9" stroke-width="2" viewBox="0 0 24 24">
-                        <rect width="13" height="13" x="9" y="9" rx="2" ry="2"/>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                    </svg>
-                    <svg id="checkIcon" class="hidden" fill="none" stroke="#67e8f9" stroke-width="2" viewBox="0 0 24 24">
-                        <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="video-preview">
-                <video id="localPreview" autoplay playsinline muted></video>
-                <div id="videoOffPreview" class="video-off-overlay hidden">
-                    <svg class="icon-lg" fill="none" stroke="#0e7490" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="m16 16 2.2 2.2M4 12V8c0-1.1.9-2 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.2M2 2l20 20"/>
-                        <path d="M2.2 2.2 22 22M4 8v4a2 2 0 0 0 2 2h4m5.5 0L22 20.5"/>
-                    </svg>
-                </div>
-            </div>
-
-            <button class="btn btn-danger" onclick="endCall()">
-                CANCEL
-            </button>
-        </div>
-    </div>
-
-    <!-- Connected Screen -->
-    <div id="connectedScreen" class="container-large hidden">
-        <div class="slide-up">
-            <div class="video-grid">
-                <div class="video-container primary glow">
-                    <video id="remoteVideo" autoplay playsinline></video>
-                    <div class="video-label">
-                        <span>PEER</span>
-                    </div>
-                </div>
-
-                <div class="video-container secondary">
-                    <video id="localVideo" autoplay playsinline muted></video>
-                    <div id="videoOffOverlay" class="video-off-overlay hidden">
-                        <svg class="icon-lg" fill="none" stroke="#0e7490" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="m16 16 2.2 2.2M4 12V8c0-1.1.9-2 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.2M2 2l20 20"/>
-                            <path d="M2.2 2.2 22 22M4 8v4a2 2 0 0 0 2 2h4m5.5 0L22 20.5"/>
+    <!-- Room Screen -->
+    <div id="roomScreen" class="room-container hidden">
+        <div class="room-header">
+            <div class="room-info">
+                <div class="room-code-badge">
+                    <span class="room-code-text" id="roomCodeDisplay"></span>
+                    <button class="copy-btn" onclick="copyCode()">
+                        <svg id="copyIcon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <rect width="13" height="13" x="9" y="9" rx="2" ry="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
                         </svg>
-                    </div>
-                    <div class="video-label">
-                        <span>YOU</span>
-                    </div>
+                        <svg id="checkIcon" class="hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="participant-count">
+                    <span id="participantCount">1</span> / 100 participants
                 </div>
             </div>
 
-            <div class="controls">
-                <button class="control-btn" id="videoBtn" onclick="toggleVideo()">
+            <div class="header-controls">
+                <button class="icon-btn" id="videoBtn" onclick="toggleVideo()">
                     <svg id="videoOnIcon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="m23 7-7 5 7 5V7z"/>
                         <rect width="15" height="14" x="1" y="5" rx="2" ry="2"/>
@@ -489,7 +486,7 @@
                     </svg>
                 </button>
 
-                <button class="control-btn" id="audioBtn" onclick="toggleAudio()">
+                <button class="icon-btn" id="audioBtn" onclick="toggleAudio()">
                     <svg id="audioOnIcon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
                         <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
@@ -503,26 +500,27 @@
                     </svg>
                 </button>
 
-                <button class="control-btn off" onclick="endCall()">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"/>
-                        <line x1="22" x2="2" y1="2" y2="22"/>
-                    </svg>
+                <button class="btn-danger" onclick="leaveRoom()">
+                    LEAVE
                 </button>
             </div>
+        </div>
+
+        <div class="video-grid-container">
+            <div id="videoGrid" class="video-grid"></div>
         </div>
     </div>
 
     <script>
         // State
-        let stage = 'home'; // home, waiting, connected
         let roomCode = '';
-        let isHost = false;
+        let myId = '';
+        let myName = '';
+        let localStream = null;
         let videoEnabled = true;
         let audioEnabled = true;
-        let localStream = null;
-        let peerConnection = null;
-        let pollingInterval = null;
+        let participants = new Map(); // Map of participantId -> {name, peerConnection, stream}
+        let updateInterval = null;
 
         const configuration = {
             iceServers: [
@@ -531,39 +529,27 @@
             ]
         };
 
-        // UI Elements
-        const homeScreen = document.getElementById('homeScreen');
-        const waitingScreen = document.getElementById('waitingScreen');
-        const connectedScreen = document.getElementById('connectedScreen');
-        const errorMessage = document.getElementById('errorMessage');
-        const codeInput = document.getElementById('codeInput');
-        const localPreview = document.getElementById('localPreview');
-        const localVideo = document.getElementById('localVideo');
-        const remoteVideo = document.getElementById('remoteVideo');
-        const roomCodeDisplay = document.getElementById('roomCodeDisplay');
-        const codeDisplaySection = document.getElementById('codeDisplaySection');
-        const waitingTitle = document.getElementById('waitingTitle');
-        const waitingSubtitle = document.getElementById('waitingSubtitle');
-
-        // Helper Functions
-        function showScreen(screen) {
-            homeScreen.classList.add('hidden');
-            waitingScreen.classList.add('hidden');
-            connectedScreen.classList.add('hidden');
-            
-            if (screen === 'home') homeScreen.classList.remove('hidden');
-            else if (screen === 'waiting') waitingScreen.classList.remove('hidden');
-            else if (screen === 'connected') connectedScreen.classList.remove('hidden');
-        }
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.remove('hidden');
-            setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+        // Generate unique ID
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
         }
 
         function generateCode() {
             return Math.floor(10000 + Math.random() * 90000).toString();
+        }
+
+        function generateName() {
+            const adjectives = ['Red', 'Blue', 'Green', 'Purple', 'Orange', 'Yellow', 'Pink', 'Cyan'];
+            const nouns = ['Fox', 'Wolf', 'Bear', 'Eagle', 'Tiger', 'Lion', 'Hawk', 'Shark'];
+            return adjectives[Math.floor(Math.random() * adjectives.length)] + ' ' +
+                   nouns[Math.floor(Math.random() * nouns.length)];
+        }
+
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+            setTimeout(() => errorEl.classList.add('hidden'), 5000);
         }
 
         async function startLocalStream() {
@@ -573,8 +559,6 @@
                     audio: true
                 });
                 localStream = stream;
-                localPreview.srcObject = stream;
-                localVideo.srcObject = stream;
                 return stream;
             } catch (err) {
                 showError('Failed to access camera/microphone. Please allow permissions.');
@@ -582,202 +566,336 @@
             }
         }
 
-        // Create Room
         async function createRoom() {
             try {
-                const stream = await startLocalStream();
+                await startLocalStream();
                 roomCode = generateCode();
-                isHost = true;
-                stage = 'waiting';
+                myId = generateId();
+                myName = generateName();
 
-                showScreen('waiting');
-                waitingTitle.textContent = 'WAITING FOR GUEST';
-                waitingSubtitle.textContent = 'Share this code with your peer';
-                codeDisplaySection.classList.remove('hidden');
-                roomCodeDisplay.textContent = roomCode;
+                // Create room in storage
+                await window.storage.set(`room_${roomCode}`, JSON.stringify({
+                    created: Date.now(),
+                    participants: [{ id: myId, name: myName }]
+                }), true);
 
-                // Initialize peer connection
-                const pc = new RTCPeerConnection(configuration);
-                peerConnection = pc;
+                // Store my info
+                await window.storage.set(`participant_${roomCode}_${myId}`, JSON.stringify({
+                    id: myId,
+                    name: myName,
+                    lastSeen: Date.now()
+                }), true);
 
-                // Add local stream tracks
-                stream.getTracks().forEach(track => {
-                    pc.addTrack(track, stream);
-                });
-
-                // Handle incoming tracks
-                pc.ontrack = (event) => {
-                    remoteVideo.srcObject = event.streams[0];
-                    stage = 'connected';
-                    showScreen('connected');
-                };
-
-                // Handle ICE candidates
-                pc.onicecandidate = async (event) => {
-                    if (event.candidate) {
-                        try {
-                            const existing = await window.storage.get(`ice_host_${roomCode}`, true);
-                            const candidates = existing ? JSON.parse(existing.value) : [];
-                            candidates.push(event.candidate);
-                            await window.storage.set(`ice_host_${roomCode}`, JSON.stringify(candidates), true);
-                        } catch (err) {
-                            console.error('Error storing ICE candidate:', err);
-                        }
-                    }
-                };
-
-                // Create offer
-                const offer = await pc.createOffer();
-                await pc.setLocalDescription(offer);
-
-                // Store offer
-                await window.storage.set(`offer_${roomCode}`, JSON.stringify(offer), true);
-
-                // Poll for answer
-                pollingInterval = setInterval(async () => {
-                    try {
-                        const answerData = await window.storage.get(`answer_${roomCode}`, true);
-                        if (answerData) {
-                            const answer = JSON.parse(answerData.value);
-                            await pc.setRemoteDescription(new RTCSessionDescription(answer));
-                            
-                            // Get guest ICE candidates
-                            const guestIceData = await window.storage.get(`ice_guest_${roomCode}`, true);
-                            if (guestIceData) {
-                                const candidates = JSON.parse(guestIceData.value);
-                                for (const candidate of candidates) {
-                                    await pc.addIceCandidate(new RTCIceCandidate(candidate));
-                                }
-                            }
-
-                            clearInterval(pollingInterval);
-                        }
-                    } catch (err) {
-                        console.error('Polling error:', err);
-                    }
-                }, 1000);
-
+                showRoomScreen();
+                startRoomUpdates();
             } catch (err) {
                 console.error('Error creating room:', err);
             }
         }
 
-        // Join Room
         async function joinRoom() {
-            const code = codeInput.value;
+            const code = document.getElementById('codeInput').value;
             if (code.length !== 5) {
                 showError('Please enter a valid 5-digit code');
                 return;
             }
 
             try {
-                const stream = await startLocalStream();
-                roomCode = code;
-                isHost = false;
-                stage = 'waiting';
-
-                showScreen('waiting');
-                waitingTitle.textContent = 'CONNECTING...';
-                waitingSubtitle.textContent = '';
-                codeDisplaySection.classList.add('hidden');
-
-                // Check if offer exists
-                const offerData = await window.storage.get(`offer_${code}`, true);
-                if (!offerData) {
-                    showError('Invalid room code or room not found');
-                    showScreen('home');
+                // Check if room exists
+                const roomData = await window.storage.get(`room_${code}`, true);
+                if (!roomData) {
+                    showError('Room not found');
                     return;
                 }
 
-                // Initialize peer connection
-                const pc = new RTCPeerConnection(configuration);
-                peerConnection = pc;
+                const room = JSON.parse(roomData.value);
+                if (room.participants.length >= 100) {
+                    showError('Room is full (100 participants max)');
+                    return;
+                }
 
-                // Add local stream tracks
-                stream.getTracks().forEach(track => {
-                    pc.addTrack(track, stream);
-                });
+                await startLocalStream();
+                roomCode = code;
+                myId = generateId();
+                myName = generateName();
 
-                // Handle incoming tracks
-                pc.ontrack = (event) => {
-                    remoteVideo.srcObject = event.streams[0];
-                    stage = 'connected';
-                    showScreen('connected');
-                };
+                // Add myself to room
+                room.participants.push({ id: myId, name: myName });
+                await window.storage.set(`room_${roomCode}`, JSON.stringify(room), true);
 
-                // Handle ICE candidates
-                pc.onicecandidate = async (event) => {
-                    if (event.candidate) {
-                        try {
-                            const existing = await window.storage.get(`ice_guest_${code}`, true);
-                            const candidates = existing ? JSON.parse(existing.value) : [];
-                            candidates.push(event.candidate);
-                            await window.storage.set(`ice_guest_${code}`, JSON.stringify(candidates), true);
-                        } catch (err) {
-                            console.error('Error storing ICE candidate:', err);
-                        }
+                // Store my info
+                await window.storage.set(`participant_${roomCode}_${myId}`, JSON.stringify({
+                    id: myId,
+                    name: myName,
+                    lastSeen: Date.now()
+                }), true);
+
+                showRoomScreen();
+                startRoomUpdates();
+            } catch (err) {
+                console.error('Error joining room:', err);
+                showError('Failed to join room');
+            }
+        }
+
+        function showRoomScreen() {
+            document.getElementById('homeScreen').classList.add('hidden');
+            document.getElementById('roomScreen').classList.remove('hidden');
+            document.getElementById('roomCodeDisplay').textContent = roomCode;
+            
+            // Add my own video
+            addVideoTile(myId, myName, localStream, true);
+            updateParticipantCount();
+        }
+
+        function addVideoTile(participantId, participantName, stream, isSelf = false) {
+            const grid = document.getElementById('videoGrid');
+            
+            // Remove existing tile if any
+            const existing = document.getElementById(`tile-${participantId}`);
+            if (existing) existing.remove();
+
+            const tile = document.createElement('div');
+            tile.id = `tile-${participantId}`;
+            tile.className = `video-tile ${isSelf ? 'self' : ''}`;
+
+            const video = document.createElement('video');
+            video.autoplay = true;
+            video.playsInline = true;
+            if (isSelf) video.muted = true;
+            video.srcObject = stream;
+
+            const label = document.createElement('div');
+            label.className = 'video-label';
+            label.innerHTML = `<span class="video-label-text">${participantName}${isSelf ? ' (You)' : ''}</span>`;
+
+            const audioIndicator = document.createElement('div');
+            audioIndicator.className = 'audio-indicator';
+            audioIndicator.innerHTML = `<svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                <line x1="2" x2="22" y1="2" y2="22"/>
+                <path d="m18 8.5-.4-.3M15 10.3V5a3 3 0 0 0-5.1-2.1"/>
+                <path d="M8.5 8.5v3a3 3 0 0 0 5.4 1.8M19 10v2a7 7 0 0 1-13.3 3.1"/>
+                <line x1="12" x2="12" y1="19" y2="22"/>
+            </svg>`;
+
+            tile.appendChild(video);
+            tile.appendChild(label);
+            tile.appendChild(audioIndicator);
+            
+            grid.appendChild(tile);
+            updateGridClass();
+
+            // Update audio indicator based on audio state
+            if (stream) {
+                const audioTrack = stream.getAudioTracks()[0];
+                if (audioTrack && audioTrack.enabled) {
+                    audioIndicator.classList.add('active');
+                    audioIndicator.innerHTML = `<svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                        <line x1="12" x2="12" y1="19" y2="22"/>
+                    </svg>`;
+                }
+            }
+
+            if (!stream || !stream.getVideoTracks()[0]?.enabled) {
+                const overlay = document.createElement('div');
+                overlay.className = 'video-off-overlay';
+                
+                const avatar = document.createElement('div');
+                avatar.className = 'user-avatar';
+                avatar.textContent = participantName.split(' ').map(n => n[0]).join('');
+                
+                overlay.appendChild(avatar);
+                tile.appendChild(overlay);
+            }
+        }
+
+        function updateGridClass() {
+            const grid = document.getElementById('videoGrid');
+            const count = grid.children.length;
+            grid.className = 'video-grid count-' + Math.min(count, 16);
+        }
+
+        function removeVideoTile(participantId) {
+            const tile = document.getElementById(`tile-${participantId}`);
+            if (tile) tile.remove();
+            updateGridClass();
+        }
+
+        async function createPeerConnection(participantId, isInitiator) {
+            const pc = new RTCPeerConnection(configuration);
+
+            // Add local stream
+            localStream.getTracks().forEach(track => {
+                pc.addTrack(track, localStream);
+            });
+
+            // Handle incoming stream
+            pc.ontrack = (event) => {
+                const participant = participants.get(participantId);
+                if (participant) {
+                    participant.stream = event.streams[0];
+                    addVideoTile(participantId, participant.name, event.streams[0], false);
+                }
+            };
+
+            // Handle ICE candidates
+            pc.onicecandidate = async (event) => {
+                if (event.candidate) {
+                    try {
+                        const key = `ice_${roomCode}_${myId}_${participantId}`;
+                        const existing = await window.storage.get(key, true);
+                        const candidates = existing ? JSON.parse(existing.value) : [];
+                        candidates.push(event.candidate);
+                        await window.storage.set(key, JSON.stringify(candidates), true);
+                    } catch (err) {
+                        console.error('Error storing ICE candidate:', err);
                     }
-                };
+                }
+            };
 
-                // Set remote description from offer
-                const offer = JSON.parse(offerData.value);
-                await pc.setRemoteDescription(new RTCSessionDescription(offer));
+            participants.set(participantId, {
+                ...participants.get(participantId),
+                peerConnection: pc
+            });
 
-                // Get host ICE candidates
-                const hostIceData = await window.storage.get(`ice_host_${code}`, true);
-                if (hostIceData) {
-                    const candidates = JSON.parse(hostIceData.value);
+            if (isInitiator) {
+                // Create and store offer
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+                await window.storage.set(`offer_${roomCode}_${myId}_${participantId}`, JSON.stringify(offer), true);
+            }
+
+            return pc;
+        }
+
+        async function handleNewParticipant(participantId, participantName) {
+            if (participantId === myId || participants.has(participantId)) return;
+
+            participants.set(participantId, {
+                id: participantId,
+                name: participantName,
+                peerConnection: null,
+                stream: null
+            });
+
+            // Create peer connection and offer
+            await createPeerConnection(participantId, true);
+        }
+
+        async function handleIncomingOffer(fromId) {
+            if (fromId === myId) return;
+
+            const offerData = await window.storage.get(`offer_${roomCode}_${fromId}_${myId}`, true);
+            if (!offerData) return;
+
+            const offer = JSON.parse(offerData.value);
+            
+            const participant = participants.get(fromId);
+            if (!participant || participant.peerConnection) return;
+
+            const pc = await createPeerConnection(fromId, false);
+            await pc.setRemoteDescription(new RTCSessionDescription(offer));
+
+            // Get ICE candidates
+            const iceData = await window.storage.get(`ice_${roomCode}_${fromId}_${myId}`, true);
+            if (iceData) {
+                const candidates = JSON.parse(iceData.value);
+                for (const candidate of candidates) {
+                    await pc.addIceCandidate(new RTCIceCandidate(candidate));
+                }
+            }
+
+            // Create answer
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            await window.storage.set(`answer_${roomCode}_${myId}_${fromId}`, JSON.stringify(answer), true);
+        }
+
+        async function handleIncomingAnswer(fromId) {
+            const answerData = await window.storage.get(`answer_${roomCode}_${fromId}_${myId}`, true);
+            if (!answerData) return;
+
+            const answer = JSON.parse(answerData.value);
+            const participant = participants.get(fromId);
+            
+            if (participant && participant.peerConnection) {
+                await participant.peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+                
+                // Get ICE candidates
+                const iceData = await window.storage.get(`ice_${roomCode}_${fromId}_${myId}`, true);
+                if (iceData) {
+                    const candidates = JSON.parse(iceData.value);
                     for (const candidate of candidates) {
-                        await pc.addIceCandidate(new RTCIceCandidate(candidate));
+                        await participant.peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                    }
+                }
+            }
+        }
+
+        async function updateRoom() {
+            try {
+                // Update my heartbeat
+                await window.storage.set(`participant_${roomCode}_${myId}`, JSON.stringify({
+                    id: myId,
+                    name: myName,
+                    lastSeen: Date.now()
+                }), true);
+
+                // Get room data
+                const roomData = await window.storage.get(`room_${roomCode}`, true);
+                if (!roomData) return;
+
+                const room = JSON.parse(roomData.value);
+                const now = Date.now();
+                
+                // Check for new participants
+                for (const p of room.participants) {
+                    if (p.id === myId) continue;
+                    
+                    const participantData = await window.storage.get(`participant_${roomCode}_${p.id}`, true);
+                    if (participantData) {
+                        const participant = JSON.parse(participantData.value);
+                        
+                        // Only consider participants active in last 10 seconds
+                        if (now - participant.lastSeen < 10000) {
+                            if (!participants.has(p.id)) {
+                                await handleNewParticipant(p.id, p.name);
+                            }
+                            
+                            // Check for offers/answers
+                            await handleIncomingOffer(p.id);
+                            await handleIncomingAnswer(p.id);
+                        } else {
+                            // Remove inactive participant
+                            if (participants.has(p.id)) {
+                                const participant = participants.get(p.id);
+                                if (participant.peerConnection) {
+                                    participant.peerConnection.close();
+                                }
+                                participants.delete(p.id);
+                                removeVideoTile(p.id);
+                            }
+                        }
                     }
                 }
 
-                // Create answer
-                const answer = await pc.createAnswer();
-                await pc.setLocalDescription(answer);
-
-                // Store answer
-                await window.storage.set(`answer_${code}`, JSON.stringify(answer), true);
-
+                updateParticipantCount();
             } catch (err) {
-                console.error('Error joining room:', err);
-                showError('Failed to join room. Please try again.');
+                console.error('Error updating room:', err);
             }
         }
 
-        // End Call
-        function endCall() {
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-                localStream = null;
-            }
-            if (peerConnection) {
-                peerConnection.close();
-                peerConnection = null;
-            }
-            if (pollingInterval) {
-                clearInterval(pollingInterval);
-                pollingInterval = null;
-            }
-            
-            // Cleanup storage
-            if (roomCode) {
-                window.storage.delete(`offer_${roomCode}`, true).catch(() => {});
-                window.storage.delete(`answer_${roomCode}`, true).catch(() => {});
-                window.storage.delete(`ice_host_${roomCode}`, true).catch(() => {});
-                window.storage.delete(`ice_guest_${roomCode}`, true).catch(() => {});
-            }
-
-            roomCode = '';
-            isHost = false;
-            videoEnabled = true;
-            audioEnabled = true;
-            codeInput.value = '';
-            
-            showScreen('home');
+        function updateParticipantCount() {
+            const count = participants.size + 1; // +1 for self
+            document.getElementById('participantCount').textContent = count;
         }
 
-        // Toggle Video
+        function startRoomUpdates() {
+            updateInterval = setInterval(updateRoom, 2000);
+        }
+
         function toggleVideo() {
             if (localStream) {
                 const videoTrack = localStream.getVideoTracks()[0];
@@ -785,30 +903,42 @@
                     videoTrack.enabled = !videoTrack.enabled;
                     videoEnabled = videoTrack.enabled;
                     
-                    const videoBtn = document.getElementById('videoBtn');
-                    const videoOnIcon = document.getElementById('videoOnIcon');
-                    const videoOffIcon = document.getElementById('videoOffIcon');
-                    const videoOffOverlay = document.getElementById('videoOffOverlay');
-                    const videoOffPreview = document.getElementById('videoOffPreview');
+                    const btn = document.getElementById('videoBtn');
+                    const onIcon = document.getElementById('videoOnIcon');
+                    const offIcon = document.getElementById('videoOffIcon');
                     
                     if (videoEnabled) {
-                        videoBtn.classList.remove('off');
-                        videoOnIcon.classList.remove('hidden');
-                        videoOffIcon.classList.add('hidden');
-                        videoOffOverlay.classList.add('hidden');
-                        videoOffPreview.classList.add('hidden');
+                        btn.classList.remove('off');
+                        onIcon.classList.remove('hidden');
+                        offIcon.classList.add('hidden');
                     } else {
-                        videoBtn.classList.add('off');
-                        videoOnIcon.classList.add('hidden');
-                        videoOffIcon.classList.remove('hidden');
-                        videoOffOverlay.classList.remove('hidden');
-                        videoOffPreview.classList.remove('hidden');
+                        btn.classList.add('off');
+                        onIcon.classList.add('hidden');
+                        offIcon.classList.remove('hidden');
+                    }
+
+                    // Update own video tile
+                    const myTile = document.getElementById(`tile-${myId}`);
+                    if (myTile) {
+                        const overlay = myTile.querySelector('.video-off-overlay');
+                        if (videoEnabled) {
+                            if (overlay) overlay.remove();
+                        } else {
+                            if (!overlay) {
+                                const newOverlay = document.createElement('div');
+                                newOverlay.className = 'video-off-overlay';
+                                const avatar = document.createElement('div');
+                                avatar.className = 'user-avatar';
+                                avatar.textContent = myName.split(' ').map(n => n[0]).join('');
+                                newOverlay.appendChild(avatar);
+                                myTile.appendChild(newOverlay);
+                            }
+                        }
                     }
                 }
             }
         }
 
-        // Toggle Audio
         function toggleAudio() {
             if (localStream) {
                 const audioTrack = localStream.getAudioTracks()[0];
@@ -816,24 +946,23 @@
                     audioTrack.enabled = !audioTrack.enabled;
                     audioEnabled = audioTrack.enabled;
                     
-                    const audioBtn = document.getElementById('audioBtn');
-                    const audioOnIcon = document.getElementById('audioOnIcon');
-                    const audioOffIcon = document.getElementById('audioOffIcon');
+                    const btn = document.getElementById('audioBtn');
+                    const onIcon = document.getElementById('audioOnIcon');
+                    const offIcon = document.getElementById('audioOffIcon');
                     
                     if (audioEnabled) {
-                        audioBtn.classList.remove('off');
-                        audioOnIcon.classList.remove('hidden');
-                        audioOffIcon.classList.add('hidden');
+                        btn.classList.remove('off');
+                        onIcon.classList.remove('hidden');
+                        offIcon.classList.add('hidden');
                     } else {
-                        audioBtn.classList.add('off');
-                        audioOnIcon.classList.add('hidden');
-                        audioOffIcon.classList.remove('hidden');
+                        btn.classList.add('off');
+                        onIcon.classList.add('hidden');
+                        offIcon.classList.remove('hidden');
                     }
                 }
             }
         }
 
-        // Copy Code
         function copyCode() {
             navigator.clipboard.writeText(roomCode);
             const copyIcon = document.getElementById('copyIcon');
@@ -848,17 +977,57 @@
             }, 2000);
         }
 
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', () => {
+        async function leaveRoom() {
+            // Close all peer connections
+            participants.forEach(participant => {
+                if (participant.peerConnection) {
+                    participant.peerConnection.close();
+                }
+            });
+            participants.clear();
+
+            // Stop local stream
             if (localStream) {
                 localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
             }
-            if (peerConnection) {
-                peerConnection.close();
+
+            // Clear interval
+            if (updateInterval) {
+                clearInterval(updateInterval);
+                updateInterval = null;
             }
-            if (pollingInterval) {
-                clearInterval(pollingInterval);
+
+            // Remove from room
+            try {
+                const roomData = await window.storage.get(`room_${roomCode}`, true);
+                if (roomData) {
+                    const room = JSON.parse(roomData.value);
+                    room.participants = room.participants.filter(p => p.id !== myId);
+                    await window.storage.set(`room_${roomCode}`, JSON.stringify(room), true);
+                }
+                
+                await window.storage.delete(`participant_${roomCode}_${myId}`, true);
+            } catch (err) {
+                console.error('Error leaving room:', err);
             }
+
+            // Clear video grid
+            document.getElementById('videoGrid').innerHTML = '';
+
+            // Return to home
+            document.getElementById('roomScreen').classList.add('hidden');
+            document.getElementById('homeScreen').classList.remove('hidden');
+            document.getElementById('codeInput').value = '';
+            
+            roomCode = '';
+            myId = '';
+            myName = '';
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', async () => {
+            await leaveRoom();
         });
     </script>
 </body>
